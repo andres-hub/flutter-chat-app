@@ -83,6 +83,7 @@ class __FormState extends State<_Form> {
                     final loginOK = await authService.login(
                         emailCtrl.text.trim(), passCtrl.text.trim());
                     if (loginOK) {
+                      Navigator.pushReplacementNamed(context, 'usuarios');
                     } else {
                       mostrarAlerta(context, 'Login incorrecto',
                           'Credenciales incorrectas');
