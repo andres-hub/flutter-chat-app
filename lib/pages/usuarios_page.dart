@@ -1,11 +1,14 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, sort_child_properties_last, prefer_final_fields
+// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, sort_child_properties_last, prefer_final_fields, unused_local_variable, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:chat/services/auth_service.dart';
+import 'package:chat/services/chat_service.dart';
 import 'package:chat/services/socket_service.dart';
+import 'package:chat/services/usuarios_service.dart';
+
 import 'package:chat/models/usuario.dart';
 
 class UsuariosPage extends StatefulWidget {
@@ -14,15 +17,25 @@ class UsuariosPage extends StatefulWidget {
 }
 
 class _UsuariosPageState extends State<UsuariosPage> {
+  final usuariosServices = UsuariosServices();
+
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  final usuarios = [
-    Usuario(uid: '1', email: 'test1@test.com', online: true, nombre: 'Andres'),
-    Usuario(uid: '2', email: 'test2@test.com', online: false, nombre: 'Vicky'),
-    Usuario(uid: '3', email: 'test3@test.com', online: true, nombre: 'Samy'),
-    Usuario(uid: '4', email: 'test4@test.com', online: true, nombre: 'Mile')
-  ];
+  List<Usuario> usuarios = [];
+
+  // final usuarios = [
+  //   Usuario(uid: '1', email: 'test1@test.com', online: true, nombre: 'Andres'),
+  //   Usuario(uid: '2', email: 'test2@test.com', online: false, nombre: 'Vicky'),
+  //   Usuario(uid: '3', email: 'test3@test.com', online: true, nombre: 'Samy'),
+  //   Usuario(uid: '4', email: 'test4@test.com', online: true, nombre: 'Mile')
+  // ];
+
+  @override
+  void initState() {
+    _CargarUsuarios();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,11 +113,18 @@ class _UsuariosPageState extends State<UsuariosPage> {
           borderRadius: BorderRadius.circular(100),
         ),
       ),
+      onTap: () {
+        final chatService = Provider.of<ChatService>(context, listen: false);
+        chatService.usuarioPara = usuario;
+        Navigator.pushNamed(context, 'chat');
+      },
     );
   }
 
   _CargarUsuarios() async {
-    await Future.delayed(Duration(milliseconds: 1000));
+    usuarios = await usuariosServices.getUsuarios();
+    setState(() {});
+    // await Future.delayed(Duration(milliseconds: 1000));
     _refreshController.refreshCompleted();
   }
 }

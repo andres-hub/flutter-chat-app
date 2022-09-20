@@ -1,6 +1,9 @@
 // ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:chat/services/auth_service.dart';
 
 class ChatMessage extends StatelessWidget {
   final String text;
@@ -15,6 +18,7 @@ class ChatMessage extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context, listen: false);
     return FadeTransition(
       opacity: animationController,
       child: SizeTransition(
@@ -23,7 +27,8 @@ class ChatMessage extends StatelessWidget {
           curve: Curves.easeInOut,
         ),
         child: Container(
-          child: uid == '123' ? _myMessage() : _notMyMessage(),
+          child:
+              uid == authService.usuario.uid ? _myMessage() : _notMyMessage(),
         ),
       ),
     );
